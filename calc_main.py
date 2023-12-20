@@ -35,21 +35,41 @@ class Main(QDialog):
 
         ### =, clear, backspace 버튼 생성
         button_equal = QPushButton("=")
-        button_clear = QPushButton("Clear")
+        button_clear = QPushButton("C")
         button_backspace = QPushButton("Backspace")
+
 
         ### =, clear, backspace 버튼 클릭 시 시그널 설정
         button_equal.clicked.connect(self.button_equal_clicked)
         button_clear.clicked.connect(self.button_clear_clicked)
         button_backspace.clicked.connect(self.button_backspace_clicked)
 
-        ### =, clear, backspace 버튼을 layout_clear_equal 레이아웃에 추가
-        layout_button.addWidget(button_clear)
+        ### 추가 버튼 생성
+        button_mod = QPushButton("%")
+        button_rv = QPushButton("1/x")
+        button_sq = QPushButton("x²")
+        button_rt = QPushButton("√x")
+        button_ce = QPushButton("CE")
+
+        ### 추가 버튼 클릭 시 시그널 설정
+        button_mod.clicked.connect(lambda state, operation = "%":self.button_operation_clicked(operation))
+        button_rv.clicked.connect(lambda state, operation = "**(-1)":self.button_unary_operate_clicked(operation))
+        button_sq.clicked.connect(lambda state, operation = "**2":self.button_unary_operate_clicked(operation))
+        button_rt.clicked.connect(lambda state, operation = "**(1/2)":self.button_unary_operate_clicked(operation))
+        button_ce.clicked.connect(self.button_clear_clicked)
+        
 
         ### 사칙연산 버튼을 레이아웃에 추가
         right_side_buttons = [button_backspace, button_division, button_product, button_minus, button_plus, button_equal]
         for i in range(6):
             layout_button.addWidget(right_side_buttons[i], i, 3)
+
+
+        ### 추가 버튼들과 clear버튼 레이아웃에 추가
+        others = [[button_mod, button_ce, button_clear], [button_rv, button_sq, button_rt]]
+        for i in range(2):
+            for j in range(3):
+                layout_button.addWidget(others[i][j], i, j)
 
         ### 숫자 버튼 생성하고, layout_number 레이아웃에 추가
         ### 각 숫자 버튼을 클릭했을 때, 숫자가 수식창에 입력 될 수 있도록 시그널 설정
@@ -111,3 +131,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     main = Main()
     sys.exit(app.exec_())
+
