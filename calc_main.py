@@ -1,5 +1,6 @@
 import sys
 from PyQt5.QtWidgets import *
+from math import *
 
 class Main(QDialog):
     def __init__(self):
@@ -123,7 +124,14 @@ class Main(QDialog):
         elif op == "*": return num*equation
         elif op == "-": return num-equation
         elif op == "+": return num+equation
-        
+        elif op == "%": return num%equation
+
+    def button_unary_operate_clicked(self, operation):
+        equation = float(self.equation_solution.text())
+        if operation == "**(-1)": ans = pow(equation, -1)
+        elif operation == "**2": ans = pow(equation, 2)
+        elif operation == "**(1/2)": ans = sqrt(equation)
+        self.equation_solution.setText(str(ans))        
 
     def button_equal_clicked(self):
         equation = self.equation_solution.text()
