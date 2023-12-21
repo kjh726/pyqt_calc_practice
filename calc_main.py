@@ -5,6 +5,8 @@ class Main(QDialog):
     def __init__(self):
         super().__init__()
         self.init_ui()
+        self.tmp = []
+        self.op = []
 
     def init_ui(self):
         main_layout = QGridLayout()
@@ -56,7 +58,7 @@ class Main(QDialog):
         button_rv.clicked.connect(lambda state, operation = "**(-1)":self.button_unary_operate_clicked(operation))
         button_sq.clicked.connect(lambda state, operation = "**2":self.button_unary_operate_clicked(operation))
         button_rt.clicked.connect(lambda state, operation = "**(1/2)":self.button_unary_operate_clicked(operation))
-        button_ce.clicked.connect(self.button_clear_clicked)
+        button_ce.clicked.connect(self.button_ce_clicked)
         
 
         ### 사칙연산 버튼을 레이아웃에 추가
@@ -104,31 +106,45 @@ class Main(QDialog):
     ### functions ###
     #################
     def number_button_clicked(self, num):
-        equation = self.equation.text()
+        equation = self.equation_solution.text()
         equation += str(num)
-        self.equation.setText(equation)
+        self.equation_solution.setText(equation)
 
     def button_operation_clicked(self, operation):
-        equation = self.equation.text()
-        equation += operation
-        self.equation.setText(equation)
+        equation = self.equation_solution.text()
+        self.tmp.append(float(equation))
+        self.op.append(operation)
+        self.equation_solution.setText("")
+
+    def binary_operation(self, equation):
+        op = self.op.pop()
+        num = self.tmp.pop()
+        if op == "/": return num/equation
+        elif op == "*": return num*equation
+        elif op == "-": return num-equation
+        elif op == "+": return num+equation
+        
 
     def button_equal_clicked(self):
-        equation = self.equation.text()
-        solution = eval(equation)
-        self.solution.setText(str(solution))
+        equation = self.equation_solution.text()
+        equation = float(equation)
+        ans = self.binary_operation(equation)
+        self.equation_solution.setText(str(ans))
 
     def button_clear_clicked(self):
-        self.equation.setText("")
-        self.solution.setText("")
+        self.tmp = []
+        self.op = []
+        self.equation_solution.setText("")
+
+    def button_ce_clicked(self):
+        self.equation_solution.setText("")
 
     def button_backspace_clicked(self):
-        equation = self.equation.text()
+        equation = self.equation_solution.text()
         equation = equation[:-1]
-        self.equation.setText(equation)
+        self.equation_solution.setText(equation)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     main = Main()
     sys.exit(app.exec_())
-
